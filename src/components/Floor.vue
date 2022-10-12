@@ -7,7 +7,7 @@
     <my-hr />
     <div class="floor__container">
       <h3>{{ floor }}</h3>
-      <div class="floor__btn"><my-button></my-button></div>
+      <div class="floor__btn"><my-button @click="buttonPressed"></my-button></div>
     </div>
   </div>
 </template>
@@ -24,9 +24,11 @@ export default {
       required: true,
     },
   },
-  //   mounted() {
-  //     console.log(floorHeight);
-  //   }
+  methods: {
+    buttonPressed() {
+      this.$emit("elevatorCall", this.floor);
+    },
+  },
 };
 </script>
 
