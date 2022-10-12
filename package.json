@@ -12,7 +12,8 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-service": "~5.0.0"
+    "@vue/cli-service": "~5.0.0",
+    "@vue/devtools": "^6.4.4"
   },
   "browserslist": [
     "> 1%",
