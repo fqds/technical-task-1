@@ -68,54 +68,64 @@ export default {
               nearestToFloor = i;
             }
           }
-          this.elewatorOnTheWay(nearestToFloor, entryQueueFloor);
+          this.elewatorOnTheWay(
+            nearestToFloor,
+            this.elevatorQueue[entryQueueFloor][0]
+          );
         }
       }
     },
-    elewatorOnTheWay(elevator, queuePosition) {
+    elewatorOnTheWay(elevator, queueFloor) {
       console.log(
         "лифт",
         elevator,
         "с этажа",
         this.elevatorArray[elevator][0],
         "едет к этажу",
-        this.elevatorQueue[queuePosition][0]
+        queueFloor
       );
       let timeout =
-        1000 *
-        Math.abs(
-          this.elevatorArray[elevator][0] - this.elevatorQueue[queuePosition][0]
-        );
-
-      this.elevatorQueue[queuePosition][1] = false;
-      this.elevatorArray[elevator] = [
-        this.elevatorQueue[queuePosition][0],
-        false,
-      ];
+        1000 * Math.abs(this.elevatorArray[elevator][0] - queueFloor);
+      this.elevatorQueue[this.getQueueElementIndex(queueFloor)][1] = false;
+      this.elevatorArray[elevator] = [queueFloor, false];
       setTimeout(() => {
         console.log("лифт", elevator, "приехал");
-        this.elevatorQueue[queuePosition][0]=0
+
+        this.elevatorQueue.splice(
+          this.elevatorQueue[this.getQueueElementIndex(queueFloor)],
+          1
+        );
         setTimeout(() => {
           console.log("лифт", elevator, "готов к отправке");
-          this.elevatorArray[elevator][1] = true
+          this.elevatorArray[elevator][1] = true;
           console.log(this.elevatorArray, this.elevatorQueue);
         }, 3000);
       }, timeout);
     },
     addToElevatorQueue(floor) {
-      let flag = true;
+      // если этаж есть в очереди ничего не делаем
+
+      this.elevatorQueue.push([floor, true]);
+
+      console.log(this.getQueueElementIndex(floor));
+
+      if (this.getQueueElementIndex(floor) === this.elevatorQueue.length - 1) {
+        console.log("этаж", floor, "добавлен в очередь");
+        this.callFreeElevator();
+      } else {
+        this.elevatorQueue.splice(
+          this.elevatorQueue[this.getQueueElementIndex(floor)],
+          1
+        );
+      }
+    },
+    getQueueElementIndex(floor) {
       for (let i = 0; i < this.elevatorQueue.length; i++) {
         if (this.elevatorQueue[i][0] === floor) {
-          flag = false;
-          break;
+          return i;
         }
       }
-      // если этаж есть в очереди ничего не делаем
-      if (flag) {
-        console.log("этаж", floor, "добавлен в очередь");
-        this.elevatorQueue.push([floor, true]); // этаж, нужен ли на нем лифт
-        this.callFreeElevator();
-      }
+      return -1;
     },
   },
   mounted() {
