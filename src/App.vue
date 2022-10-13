@@ -1,11 +1,16 @@
 <template>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+  />
   <div class="app">
     <div class="container">
       <elevator-shaft
+        v-for="elevator in elevatorArray"
         :floors="floors"
         :floorHeight="floorHeight"
         :currentFloor="elevator[0]"
-        v-for="elevator in elevatorArray"
+        :isMoving="!elevator[1] && elevator[2] === 0"
       />
       <div>
         <floor

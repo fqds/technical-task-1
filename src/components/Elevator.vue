@@ -6,13 +6,23 @@
       marginBottom: liftHeight,
       transition: transition,
     }"
-  ></div>
+  >
+    <elevator-status-bar
+      v-if="isMoving"
+      :floor="currentFloor"
+      :direction="direction"
+      style="margin-top: 10px"
+    />
+  </div>
 </template>
 
 <script>
-import { toNumber } from "@vue/shared";
+import ElevatorStatusBar from "@/components/ElevatorStatusBar";
 
 export default {
+  components: {
+    ElevatorStatusBar,
+  },
   props: {
     currentFloor: {
       type: Number,
@@ -22,12 +32,17 @@ export default {
       type: String,
       required: true,
     },
+    isMoving: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       latestFloor: 1,
       liftHeight: 0,
       transition: "all 0s linear",
+      direction: false,
     };
   },
   watch: {
@@ -38,6 +53,11 @@ export default {
         "vh";
       this.transition =
         "all " + Math.abs(this.latestFloor - this.currentFloor) + "s linear";
+      if (this.currentFloor - this.latestFloor > 0) {
+        this.direction = true;
+      } else {
+        this.direction = false;
+      }
       this.latestFloor = this.currentFloor;
     },
   },
@@ -48,6 +68,8 @@ export default {
 .elevator {
   width: 78px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: teal;
 }
 </style>

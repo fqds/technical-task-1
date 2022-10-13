@@ -1,6 +1,10 @@
 <template>
   <div class="elevator__shaft">
-    <elevator :currentFloor="currentFloor" :floorHeight="floorHeight" />
+    <elevator
+      :currentFloor="currentFloor"
+      :isMoving="isMoving"
+      :floorHeight="floorHeight"
+    />
   </div>
 </template>
 
@@ -19,6 +23,10 @@ export default {
     },
     floors: {
       type: Number,
+      required: true,
+    },
+    isMoving: {
+      type: Boolean,
       required: true,
     },
   },
