@@ -1,13 +1,12 @@
 <template>
-  <div
-    class="floor"
-    v-bind:style="{ height: floorHeight }"
-    style="`height: ${floorHeight};`"
-  >
+  <div class="floor" v-bind:style="{ height: floorHeight }">
     <my-hr />
     <div class="floor__container">
       <h3>{{ floor }}</h3>
-      <div class="floor__btn"><my-button @click="buttonPressed"></my-button></div>
+      <div class="floor__btn">
+        <my-button @click="buttonPressed" v-if="!isButtonPressed"></my-button>
+        <my-button v-else :color="'darkorange'"></my-button>
+      </div>
     </div>
   </div>
 </template>
@@ -21,6 +20,10 @@ export default {
     },
     floorHeight: {
       type: String,
+      required: true,
+    },
+    isButtonPressed: {
+      type: Boolean,
       required: true,
     },
   },

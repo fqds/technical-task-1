@@ -4,12 +4,14 @@
       <elevator-shaft
         :floors="floors"
         :floorHeight="floorHeight"
-        v-for="elevator in elevators"
+        :currentFloor="elevator[0]"
+        v-for="elevator in elevatorArray"
       />
       <div>
         <floor
-          v-for="floor in floors"
-          :floor="1 + floors - floor"
+          v-for="floor in floorArray"
+          :floor="floor[0]"
+          :isButtonPressed="floor[1]"
           :floorHeight="floorHeight"
           @elevatorCall="addToElevatorQueue"
         />
@@ -29,9 +31,10 @@ export default {
     return {
       floors: 10, // Количество этажей
       elevators: 3, // Количество лифтов
-      floorHeight: "100%",
+      floorHeight: "96vh",
       elevatorArray: [],
       elevatorQueue: [],
+      floorArray: [],
     };
   },
   methods: {
@@ -87,36 +90,54 @@ export default {
       let timeout =
         1000 * Math.abs(this.elevatorArray[elevator][0] - queueFloor);
       this.elevatorQueue[this.getQueueElementIndex(queueFloor)][1] = false;
-      this.elevatorArray[elevator] = [queueFloor, false];
+      this.elevatorArray[elevator] = [queueFloor, false, 0];
       setTimeout(() => {
         console.log("лифт", elevator, "приехал");
 
-        this.elevatorQueue.splice(
-          this.elevatorQueue[this.getQueueElementIndex(queueFloor)],
-          1
-        );
-        setTimeout(() => {
+        this.floorArray[this.floors - queueFloor][1] = false;
+        this.waitOnThisFloor(elevator, queueFloor);
+      }, timeout);
+    },
+    waitOnThisFloor(elevator, floor) {
+      this.elevatorArray[elevator][1] = false;
+      this.elevatorArray[elevator][2] += 1;
+      setTimeout(() => {
+        this.elevatorArray[elevator][2] -= 1;
+        if (!this.elevatorArray[elevator][2]) {
           console.log("лифт", elevator, "готов к отправке");
           this.elevatorArray[elevator][1] = true;
-          console.log(this.elevatorArray, this.elevatorQueue);
-        }, 3000);
-      }, timeout);
+          this.elevatorQueue.splice(
+            this.elevatorQueue[this.getQueueElementIndex(floor)],
+            1
+          );
+          for (let i = 0; i < this.elevatorQueue.length; i++) {
+            if (this.elevatorQueue[i][1]) {
+              this.elewatorOnTheWay(elevator, this.elevatorQueue[i][0]);
+              break;
+            }
+            console.log("эллементу очереди ", i, "лифт не требуется");
+          }
+        }
+      }, 3000);
     },
     addToElevatorQueue(floor) {
       // если этаж есть в очереди ничего не делаем
 
-      this.elevatorQueue.push([floor, true]);
+      console.log(this.getQueueElementIndex(floor), this.elevatorQueue);
 
-      console.log(this.getQueueElementIndex(floor));
-
-      if (this.getQueueElementIndex(floor) === this.elevatorQueue.length - 1) {
+      let flag = true;
+      for (let i = 0; i < this.elevators; i++) {
+        if (this.elevatorArray[i][0] === floor) {
+          this.waitOnThisFloor(i);
+          flag = false;
+          break;
+        }
+      }
+      if (flag) {
+        this.elevatorQueue.push([floor, true]);
         console.log("этаж", floor, "добавлен в очередь");
+        this.floorArray[this.floors - floor][1] = true;
         this.callFreeElevator();
-      } else {
-        this.elevatorQueue.splice(
-          this.elevatorQueue[this.getQueueElementIndex(floor)],
-          1
-        );
       }
     },
     getQueueElementIndex(floor) {
@@ -129,9 +150,12 @@ export default {
     },
   },
   mounted() {
-    this.floorHeight = 100 / this.floors + "%"; // Люблю джаваскрипт =)
+    this.floorHeight = 96 / this.floors + "vh"; // Люблю джаваскрипт =)
     for (let i = 0; i < this.elevators; i++) {
-      this.elevatorArray.push([1, true]); // Первое - этаж, второе - состояние
+      this.elevatorArray.push([1, true, 0]); // Первое - этаж, второе - готовость к отправке, третье - isWaiting
+    }
+    for (let i = 0; i < this.floors; i++) {
+      this.floorArray.push([this.floors - i, false]);
     }
   },
 };
@@ -145,7 +169,7 @@ export default {
 }
 .container {
   height: 100vh;
-  padding: 15px 20px;
+  padding: 2vh 20px;
   display: flex;
   flex-direction: row;
 }
