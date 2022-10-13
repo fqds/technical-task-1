@@ -4,6 +4,7 @@
       :currentFloor="currentFloor"
       :isMoving="isMoving"
       :floorHeight="floorHeight"
+      :isWaiting="isWaiting"
     />
   </div>
 </template>
@@ -26,6 +27,10 @@ export default {
       required: true,
     },
     isMoving: {
+      type: Boolean,
+      required: true,
+    },
+    isWaiting: {
       type: Boolean,
       required: true,
     },

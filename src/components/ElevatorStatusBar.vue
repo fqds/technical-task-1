@@ -35,13 +35,7 @@ export default {
   font-size: 12px;
 }
 #blink {
-  -webkit-animation: blink 2s linear infinite;
   animation: blink 2s linear infinite;
-}
-@-webkit-keyframes blink {
-  0% { background-color: rgba(34, 34, 34, 0.8); }
-  50% { background-color: rgba(34, 34, 34, 0); }
-  100% { background-color: rgba(34, 34, 34, 0.8); }
 }
 @keyframes blink {
   0% { background-color: rgba(34, 34, 34, 0.8); }

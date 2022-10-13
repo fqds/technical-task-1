@@ -7,6 +7,7 @@
       transition: transition,
     }"
   >
+    <div id="elevator__background" v-if="isWaiting"></div>
     <elevator-status-bar
       v-if="isMoving"
       :floor="currentFloor"
@@ -36,6 +37,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    isWaiting: {
+      type: Boolean,
+      required: true,
+    }
   },
   data() {
     return {
@@ -71,5 +76,22 @@ export default {
   flex-direction: column;
   align-items: center;
   background-color: teal;
+}
+
+#elevator__background {
+  width: 100%;
+  height: 100%;
+  animation: blink 2s linear infinite;
+}
+@keyframes blink {
+  0% {
+    background-color: rgb(255, 255, 255, 0);
+  }
+  50% {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  100% {
+    background-color: rgb(255, 255, 255, 0);
+  }
 }
 </style>

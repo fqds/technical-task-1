@@ -11,6 +11,7 @@
         :floorHeight="floorHeight"
         :currentFloor="elevator[0]"
         :isMoving="!elevator[1] && elevator[2] === 0"
+        :isWaiting="!!elevator[2]"
       />
       <div>
         <floor
@@ -35,7 +36,7 @@ export default {
   data() {
     return {
       floors: 10, // Количество этажей
-      elevators: 3, // Количество лифтов
+      elevators: 5, // Количество лифтов
       floorHeight: "96vh",
       elevatorArray: [],
       elevatorQueue: [],
